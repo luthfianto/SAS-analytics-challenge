@@ -122,8 +122,8 @@ RFclassifier.fit(X_fit, y_fit)
 prf = RFclassifier.predict_proba(X_eval)[:,1]
 print 'RandomForest: %f' % roc_auc_score(y_eval, prf)
 
-
-etc =ExtraTreesClassifier(n_estimators=649, max_features=70, max_depth=8, min_samples_split=4, random_state=seed, n_jobs=-1)
+# 0.690271
+etc =ExtraTreesClassifier(n_estimators=649, max_features=85, max_depth=9, min_samples_split=4, random_state=seed, n_jobs=-1)
 etc.fit(X_fit, y_fit)
 
 ## Predict evaluation sets
@@ -159,8 +159,7 @@ ex=np.hstack((X_train, train_diag_1_desc.todense()))
 #diag_3_desc=tfidf.fit_transform(test.diag_3_desc.astype(np.str))
 X_test=np.hstack((X_test_, test_diag_1_desc.todense()))
 
-#RFclassifier =RandomForestClassifier(n_estimators=1000, max_features=3, max_depth=3, min_samples_split=10, random_state=seed, n_jobs=-1)
-RFclassifier =RandomForestClassifier(n_estimators=649, max_features=55, max_depth=9, min_samples_split=3, random_state=seed, n_jobs=-1)
+RFclassifier = RandomForestClassifier(n_estimators=649, max_features=85, max_depth=9, min_samples_split=3, random_state=seed, n_jobs=-1)
 RFclassifier.fit(ex, y_train)
 yprob = RFclassifier.predict_proba(X_test)[:,1]
 
