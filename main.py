@@ -1,4 +1,4 @@
-# Current AUC 0.698364
+# Current AUC 0.699465
 # Last AUC 0.695045 -> LB 0.71219
 from __future__ import division
 import pandas as pd
@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.cross_validation import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
+from sklearn.decomposition import TruncatedSVD, RandomizedPCA
 from sklearn.metrics import roc_auc_score
 seed = 1909 
 
@@ -90,10 +90,13 @@ y_train =train.readmitted
 # y_test =test.readmitted
 
 tfidf=TfidfVectorizer(stop_words='english', ngram_range = (1,1)) # (1,2) sama aja kaya (1,1) sih kemarin
-diag_1_desc=tfidf.fit_transform(train.diag_1_desc.astype(np.str))
+diag_1_desc_=tfidf.fit_transform(train.diag_1_desc.astype(np.str))
 
-svd=TruncatedSVD(100)
-diag_1_desc=svd.fit_transform(diag_1_desc)
+#svd=TruncatedSVD(90, random_state=seed)
+#diag_1_desc=svd.fit_transform(diag_1_desc_)
+
+rpca=RandomizedPCA(90, random_state=seed)
+diag_1_desc=rpca.fit_transform(diag_1_desc_.toarray())
 
 eks=np.hstack((X_train, diag_1_desc))
 
@@ -117,7 +120,7 @@ RFclassifier.fit(X_fit, y_fit)
 
 ## Predict evaluation sets
 prf = RFclassifier.predict_proba(X_eval)[:,1]
-print 'Cross-Validation AUC score: %f' % roc_auc_score(y_eval, prf)
+print 'RandomForest: %f' % roc_auc_score(y_eval, prf)
 
 
 etc =ExtraTreesClassifier(n_estimators=649, max_features=70, max_depth=8, min_samples_split=4, random_state=seed, n_jobs=-1)
@@ -125,7 +128,7 @@ etc.fit(X_fit, y_fit)
 
 ## Predict evaluation sets
 pred = etc.predict_proba(X_eval)[:,1]
-print 'Cross-Validation AUC score: %f' % roc_auc_score(y_eval, pred)
+print 'ExTrees: %f' % roc_auc_score(y_eval, pred)
 
 from sklearn.linear_model import LogisticRegression
 lr =LogisticRegression(n_jobs=-1)
@@ -133,7 +136,9 @@ lr.fit(X_fit, y_fit)
 
 ## Predict evaluation sets
 plr = lr.predict_proba(X_eval)[:,1]
-print 'Cross-Validation AUC score: %f' % roc_auc_score(y_eval, plr)
+print 'LogReg: %f' % roc_auc_score(y_eval, plr)
+
+print 'Ensemble: %f' % roc_auc_score(y_eval, plr+prf+pred)
 
 ###
 ### SUBMISSION
