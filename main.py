@@ -1,5 +1,5 @@
-# AUC 0.697113
-# AUC 0.695045 -> LB 0.71219
+# Current AUC 0.698364
+# Last AUC 0.695045 -> LB 0.71219
 from __future__ import division
 import pandas as pd
 import numpy as np
@@ -12,9 +12,9 @@ seed = 1909
 
 def ICD(x):
     if x.isdigit():
-        x=int(x)
+        x = int(x)
     elif len(x.split('.')) > 1:
-        x=float(x)
+        x = float(x)
         
     if     1 <= x <= 139: return 'infectious and parasitic diseases'
     elif 140 <= x <= 239: return 'neoplasms'
@@ -37,7 +37,7 @@ def ICD(x):
     else:                 return x
     
 ###
-'weight' # Banyak NaN
+# 'weight' # Banyak NaN
 categorical_set = {
  'admission_source_id',
  'admission_type_id',
@@ -48,7 +48,8 @@ categorical_set = {
  'payer_code',
  'race',
  'diag_1',
- #'diag_2' # turun
+ 'diag_2',
+ 'diag_3'
  }
 categorical=list(categorical_set)
 ###
@@ -59,7 +60,8 @@ test=pd.read_csv('SAStest.csv')
 combined=pd.concat((train,test)).reset_index()
 
 combined.diag_1 = combined.diag_1.apply(ICD)
-# combined.diag_2 = combined.diag_2.apply(ICD) # turun
+combined.diag_2 = combined.diag_2.apply(ICD)
+combined.diag_3 = combined.diag_3.apply(ICD)
 
 combined[combined.columns[24:49]]=pd.DataFrame([combined[i].apply({'No':0}.get).replace(np.NaN, 1) for i in combined.columns[24:49] ]).T.astype(np.bool)
 
@@ -110,7 +112,7 @@ X_fit, X_eval, y_fit, y_eval= train_test_split(eks, y_train, test_size=0.2, rand
 
 print 'Training Random Forest model...'
 ## Tune hyperparameter such as n_estimators, max_features, max_depth, min_samples_split for better cross-validation auc score
-RFclassifier =RandomForestClassifier(n_estimators=649, max_features=75, max_depth=9, min_samples_split=3, random_state=seed, n_jobs=-1)
+RFclassifier =RandomForestClassifier(n_estimators=649, max_features=85, max_depth=9, min_samples_split=3, random_state=seed, n_jobs=-1)
 RFclassifier.fit(X_fit, y_fit)
 
 ## Predict evaluation sets
