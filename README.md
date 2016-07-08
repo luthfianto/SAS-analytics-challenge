@@ -1,3 +1,7 @@
+**Dataset:  [Diabetes 130-US hospitals for years 1999-2008 Data Set ](https://archive.ics.uci.edu/ml/datasets/Diabetes+130-US+hospitals+for+years+1999-2008)**
+
+Other references:
+
 http://support.sas.com/resources/papers/proceedings15/3254-2015.pdf
 
 - The number of times a patient has been an inpatient previously has a positive effect on readmission followed by the number of times he/she was an outpatient.
