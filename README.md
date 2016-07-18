@@ -1,5 +1,9 @@
 **Dataset:  [Diabetes 130-US hospitals for years 1999-2008 Data Set ](https://archive.ics.uci.edu/ml/datasets/Diabetes+130-US+hospitals+for+years+1999-2008)**
 
+Notes:
+- Logistic Regression: without TFIDF
+- Random Forest: with TFIDF
+
 Other references:
 
 http://support.sas.com/resources/papers/proceedings15/3254-2015.pdf
